@@ -3,6 +3,9 @@
 ## Description
  악보 이미지(.jpg 또는 .png)를 XML 형식으로 표기하는 MusicXML(.mxl 또는 .musicxml) 포멧으로 변환할 수 있습니다.
 
+#Usage
+ YOLO v5 모델(stored at "yolov5/weightsstock/")을 추가로 훈련하려면 
+ makeyolomusicdict/generatedictforxml.py의 429~474행에 명시된 특정 레이블로 각 모델을 확인하십시오.
 
 # yolo place yolov5 weights in /bfaap.yolov5/weightsstock/
     
