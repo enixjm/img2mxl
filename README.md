@@ -1,3 +1,9 @@
+*To produce a musicxml file from a sheet music image (You must comply with and are also resibonsible for copyright laws, etc. for use of sheet music images in img2Mxml)
+
+## Description
+ 악보 이미지(.jpg 또는 .png)를 XML 형식으로 표기하는 MusicXML(.mxl 또는 .musicxml) 포멧으로 변환할 수 있습니다.
+
+
 # yolo place yolov5 weights in /bfaap.yolov5/weightsstock/
     
     !mkdir /content/img2xml/bfaaap/yolov5/weightsstock
