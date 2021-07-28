@@ -7,6 +7,9 @@
  YOLO v5 모델(stored at "yolov5/weightsstock/")을 추가로 훈련하려면 
  makeyolomusicdict/generatedictforxml.py의 429~474행에 명시된 특정 레이블로 각 모델을 확인하십시오.
 
+# Environment
+ Mac, Python==3.8.5, YOLO v5
+
 # yolo place yolov5 weights in /bfaap.yolov5/weightsstock/
     
     mkdir bfaaap/yolov5/weightsstock
