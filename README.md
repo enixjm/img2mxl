@@ -12,6 +12,7 @@ Todo
 
 # Environment
  Mac, Python==3.8.5, YOLO v5
+ Docker 20.10.7 Flask 1.1.2
 
 # yolo place yolov5 weights in /bfaap.yolov5/weightsstock/
     
