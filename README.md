@@ -1,6 +1,6 @@
 Todo
- - pdf load
- - Apache Airflow
+ - pdf load.
+ - Apache Airflow.
 
 *To produce a musicxml file from a sheet music image (You must comply with and are also resibonsible for copyright laws, etc. for use of sheet music images in img2Mxml)
 
