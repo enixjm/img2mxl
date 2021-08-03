@@ -1,6 +1,7 @@
 Todo
  - pdf load.
  - Apache Airflow.
+ - 변환 이미지 정확도 비교
 
 *To produce a musicxml file from a sheet music image (You must comply with and are also resibonsible for copyright laws, etc. for use of sheet music images in img2Mxml)
 
