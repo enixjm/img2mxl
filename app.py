@@ -4,6 +4,7 @@ import subprocess
 import glob
 import time
 from IPython.display import Image
+import flask
 
 from bfaaap.leveloriginalimg.leveloriginalimg import leveloriginalimg
 from bfaaap.alignmeasures.align_measures import generate_measures_in_eachstave_aslist
@@ -29,6 +30,13 @@ beat_type = 2 #see the above
 preset_measure_duration = 1024 * beats / beat_type #
 
 @app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/xml')
+def open_xml():
+    return flask.send_file('static/test.xml')
+
 def index():
     return render_template('index.html')
 
@@ -382,8 +390,10 @@ def load_img():
     with open(new_xml_filepath, 'w') as f:
         f.write(wholeXML_staff2_text)
     
-    return render_template('index.html', original_image=original_img, rotate_image=rotate_img, detect_image=MEASURE_INFERENCE_RESULT_PATH, staff1=images1, staff2=images2)
-
+    # return render_template('index.html', original_image=original_img, rotate_image=rotate_img, detect_image=MEASURE_INFERENCE_RESULT_PATH, staff1=images1, staff2=images2)
+    if os.path.isfile(new_xml_filepath):
+        return flask.send_file(new_xml_filepath)
+    return 'failed'
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
