@@ -2103,7 +2103,7 @@ def generateMSsequenceForStaff1or2(all_ms_in_eachmeasure_input, current_accident
             print(f'{nameOfMeasure}: alpha is {alpha} and beta is {beta}')
             #sort ms items horizontally
             hsMSlist = ms_horizontalsorting(all_ms_in_eachmeasure[nameOfMeasure])#hs means horizontally sorted one
-            
+
             #isWideStaff
             if not isWideStaff:
                 hsMSlist_copy = copy.copy(hsMSlist)
@@ -2115,9 +2115,9 @@ def generateMSsequenceForStaff1or2(all_ms_in_eachmeasure_input, current_accident
             current_clef_input = copy.copy(current_clef)
             
             print(f'the number of items in hsMSlist is {len(hsMSlist)}')
-            print(f'hsMSlist[0]["measuretype"] is {hsMSlist[0]["measuretype"]}; the category is {hsMSlist[0]["category"]}')
             #if len(hsMSlist) > 1
             if len(hsMSlist) > 1:
+                print(f'hsMSlist[0]["measuretype"] is {hsMSlist[0]["measuretype"]}; the category is {hsMSlist[0]["category"]}')
                 if hsMSlist[1]['measuretype'] == MeasureType.x0 and (hsMSlist[1]['category'] == Category.cf0):
                     current_clef_input = hsMSlist[1]['clef']
                     hsMSlist[1]['clefchange'] = True

@@ -234,7 +234,8 @@ numberOfFigs_eachType = 4
 #staff1
 for feature in featureTypes:
     for i in range(numberOfFigs_eachType):
-        img = Image.open(f'{DISPLAY_FIG_PATHDIR}/staff1/{feature}/measure#{i:03}.jpg')
+        #img = Image.open(f'{DISPLAY_FIG_PATHDIR}/staff1/{feature}/measure#{i:03}.jpg')
+        img = Image.open(f'{DISPLAY_FIG_PATHDIR}/staff1/{feature}/measure#{i:03}.'+FILE_PATH[-3:])
         images.append(img)
 # #change /test0/ to your folder of interest
 # img = Image.open('/content/img2xml/bfaaap/musicdata/test0/staff1/body/measure#000.jpg')
@@ -247,7 +248,7 @@ images = []
 #staff2
 for feature in featureTypes:
     for i in range(numberOfFigs_eachType):
-        img = Image.open(f'{DISPLAY_FIG_PATHDIR}/staff2/{feature}/measure#{i:03}.jpg')
+        img = Image.open(f'{DISPLAY_FIG_PATHDIR}/staff2/{feature}/measure#{i:03}.'+FILE_PATH[-3:])
         images.append(img)
 # #change /test0/ to your folder of interest
 # img = Image.open('/content/img2xml/bfaaap/musicdata/test0/staff2/body/measure#000.jpg')

@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 </head>
 <body>
     <h1>original image</h1>
@@ -9,5 +13,13 @@
     <img src="{{ rotate_image }}" width="180">
     <h1>detect image</h1>
     <img src="{{ detect_image }}" width="180">
+    <h1>staff1</h1>
+    {% for i in staff1 %}
+    <img src="{{ i }}" width="180">
+    {% endfor %}
+    <h1>staff2</h1>
+    {% for i in staff2 %}
+    <img src="{{ i }}" width="180">
+    {% endfor %}
 </body>
 </html>
