@@ -41,18 +41,7 @@ beats = 3 #if the beat is 3/4, the "beats" is 3 and the "beat_type" is 4.
 beat_type = 2 #see the above
 preset_measure_duration = 1024 * beats / beat_type #
 
-########
-#Image(filename=FILE_PATH, width=250) 
-showimg = Image.open(FILE_PATH)
-#showimg.show()
-
 FILE_PATH = leveloriginalimg(FILE_PATH)
-
-#Image(filename=FILE_PATH, width=250) 
-showimg = Image.open(FILE_PATH)
-#showimg.show()
-
-#######
 
 #extract staves with measures
 #perform inference on sheet music
