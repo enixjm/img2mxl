@@ -32,14 +32,15 @@ def show_images(images, figsize=(20,20), columns = 4):
         plt.subplot(len(images) / columns + 1, columns, i + 1)
         plt.imshow(image)
 
-#here, provide a FILE_PATH for a sheet music image (either .jpg or .png)
-FILE_PATH ='./bfaaap/musicdata/test0/test.jpg'
-#input base data for sheet music of interest:
-tempo = 120 #
-fifths = -1 #if the key signature after clef has three #, the number is 3 (positive integer); if the key signature has one b, the number is -1 (negative integer); if the key signature does't have any of them, the number is 0
-beats = 3 #if the beat is 3/4, the "beats" is 3 and the "beat_type" is 4. 
-beat_type = 2 #see the above
-preset_measure_duration = 1024 * beats / beat_type #
+class conv_image:
+    def __init__(self, FILE_PATH, tempo, fifths, beats, beat_type, preset_measure_duration):
+        self.FILE_PATH = FILE_PATH
+        self.tempo = tempo
+        self.fifths = fifths
+        self.beats = beats
+        self.beat_type = beat_type
+        self.preset_measure_duration = preset_measure_duration
+        
 
 FILE_PATH = leveloriginalimg(FILE_PATH)
 
