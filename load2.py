@@ -40,9 +40,9 @@ class conv_image:
         self.beats = beats
         self.beat_type = beat_type
         self.preset_measure_duration = preset_measure_duration
-        
-
-FILE_PATH = leveloriginalimg(FILE_PATH)
+    
+    def level_original_img(self):
+        self.FILE_PATH = leveloriginalimg(self.FILE_PATH)
 
 #extract staves with measures
 #perform inference on sheet music
