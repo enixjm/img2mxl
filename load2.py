@@ -45,13 +45,12 @@ class conv_image:
         self.FILE_PATH = leveloriginalimg(self.FILE_PATH)
         print(self.FILE_PATH)
 
-# #extract staves with measures
-# #perform inference on sheet music
-# SAVE_DIRECTORY_PATH = os.path.dirname(FILE_PATH) + '/staff'
+    def detect_bar(self):
+        SAVE_DIRECTORY_PATH = os.path.dirname(self.FILE_PATH) + '/staff'
 
-# proc = subprocess.Popen(['python','./bfaaap/yolov5/detect.py', '--weights', './bfaaap/yolov5/weightsstock/last_0.95_staff4_20201230.pt', '--SAVE_PATH', SAVE_DIRECTORY_PATH ,'--img', '416', '--conf', '0.75', '--source', FILE_PATH, '--save-txt'])
-# proc.wait()
-# ########
+        proc = subprocess.Popen(['python','./bfaaap/yolov5/detect.py', '--weights', './bfaaap/yolov5/weightsstock/last_0.95_staff4_20201230.pt', '--SAVE_PATH', SAVE_DIRECTORY_PATH ,'--img', '416', '--conf', '0.75', '--source', self.FILE_PATH, '--save-txt'])
+        proc.wait()
+
 # # check the measure inference result
 # files_temp = glob.glob(FILE_PATH)
 # #the resulting file after inference of measures
