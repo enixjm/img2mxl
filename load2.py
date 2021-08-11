@@ -49,20 +49,19 @@ class conv_image:
         SAVE_DIRECTORY_PATH = os.path.dirname(self.FILE_PATH) + '/staff'
 
         proc = subprocess.Popen(['python','./bfaaap/yolov5/detect.py', '--weights', './bfaaap/yolov5/weightsstock/last_0.95_staff4_20201230.pt', '--SAVE_PATH', SAVE_DIRECTORY_PATH ,'--img', '416', '--conf', '0.75', '--source', self.FILE_PATH, '--save-txt'])
-        proc.wait()
-
-# # check the measure inference result
-# files_temp = glob.glob(FILE_PATH)
-# #the resulting file after inference of measures
-# MEASURE_INFERENCE_RESULT_PATH = ''
-# for file_temp in files_temp:
-#     if file_temp.endswith('jpg') or file_temp.endswith('png'):
-#         basename = os.path.basename(file_temp)
-#         MEASURE_INFERENCE_RESULT_PATH = SAVE_DIRECTORY_PATH + '/' + basename
-# #show the measure inference results on the leveled sheet music image
-# #Image(filename=MEASURE_INFERENCE_RESULT_PATH, width=900) 
-# showimg = Image.open(MEASURE_INFERENCE_RESULT_PATH)
-# showimg.show()
+        proc.wait()    
+        # check the measure inference result
+        files_temp = glob.glob(self.FILE_PATH)
+        #the resulting file after inference of measures
+        MEASURE_INFERENCE_RESULT_PATH = ''
+        for file_temp in files_temp:
+            if file_temp.endswith('jpg') or file_temp.endswith('png'):
+                basename = os.path.basename(file_temp)
+                MEASURE_INFERENCE_RESULT_PATH = SAVE_DIRECTORY_PATH + '/' + basename
+        #show the measure inference results on the leveled sheet music image
+        #Image(filename=MEASURE_INFERENCE_RESULT_PATH, width=900) 
+        showimg = Image.open(MEASURE_INFERENCE_RESULT_PATH)
+        showimg.show()
 
 # #After the measure-recognizing model is applied to a piece of sheet music
 
