@@ -62,20 +62,16 @@ class conv_image:
         #Image(filename=MEASURE_INFERENCE_RESULT_PATH, width=900) 
         showimg = Image.open(MEASURE_INFERENCE_RESULT_PATH)
         showimg.show()
+        
+        files_temp = glob.glob(self.FILE_PATH)
+        #To skip .txt files
+        for file_temp in files_temp:
+            if file_temp.endswith('jpg') or file_temp.endswith('png'):
+                img = cv2.imread(file_temp)
+                dirname = os.path.dirname(file_temp)
+                basename = os.path.basename(file_temp)
+                cv2.imwrite(dirname + '/staff/labels/' + basename, img)
 
-# #After the measure-recognizing model is applied to a piece of sheet music
-
-# #copy and move the relevant files under a dirctory ./musicdata/AAA/(staff/labels)
-# #sheet music (.jpg) provided in FILE_PATH
-# files_temp = glob.glob(FILE_PATH)
-# #To skip .txt files
-# for file_temp in files_temp:
-#     if file_temp.endswith('jpg') or file_temp.endswith('png'):
-#         img = cv2.imread(file_temp)
-#         dirname = os.path.dirname(file_temp)
-#         basename = os.path.basename(file_temp)
-#         cv2.imwrite(dirname + '/staff/labels/' + basename, img)
-# ###
 
 # #sheet music provided in FILE_PATH
 # staves_with_measures_in_sheetmusic = generate_measures_in_eachstave_aslist(FILE_PATH)
