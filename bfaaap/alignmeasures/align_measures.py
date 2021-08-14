@@ -68,7 +68,7 @@ def deleteOverlaps(staves_input):
                     continue
                 else:
                     if abs(staves_tmp[i][j-1]['left'] - staves_tmp[i][j]['left']) < 0.02:
-                        del staves[i][j]
+                        del staves_tmp[i][j]
 
     return staves
 
