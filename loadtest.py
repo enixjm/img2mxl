@@ -9,8 +9,8 @@ beats = 3 #if the beat is 3/4, the "beats" is 3 and the "beat_type" is 4.
 beat_type = 2 #see the above
 preset_measure_duration = 1024 * beats / beat_type #
 
-conv_img = load2.conv_image(FILE_PATH=FILE_PATH, tempo=tempo, fifths=fifths, beats=beats, beat_type=beat_type, preset_measure_duration=preset_measure_duration)
+conv_img = load2.convImage(FILE_PATH=FILE_PATH, tempo=tempo, fifths=fifths, beats=beats, beat_type=beat_type, preset_measure_duration=preset_measure_duration)
 
 #conv_img.level_original_img()
-conv_img.detect_bar()
-
+#conv_img.detect_bar()
+conv_img.show_staff_img()
