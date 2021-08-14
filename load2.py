@@ -45,6 +45,37 @@ class convImage:
     def level_original_img(self):
         self.FILE_PATH = leveloriginalimg(self.FILE_PATH)
         print(self.FILE_PATH)
+    
+    def show_staff_img(self):
+        DISPLAY_FIG_PATHDIR = os.path.dirname(self.FILE_PATH)
+        images = []
+        featureTypes = ['body', 'armbeam', 'clef', 'accidental', 'rest']
+        numberOfFigs_eachType = 4
+
+        #staff1
+        for feature in featureTypes:
+            for i in range(numberOfFigs_eachType):
+                #img = Image.open(f'{DISPLAY_FIG_PATHDIR}/staff1/{feature}/measure#{i:03}.jpg')
+                img = Image.open(f'{DISPLAY_FIG_PATHDIR}/staff1/{feature}/measure#{i:03}.'+self.FILE_PATH[-3:])
+                images.append(img)
+        # #change /test0/ to your folder of interest
+        # img = Image.open('/content/img2xml/bfaaap/musicdata/test0/staff1/body/measure#000.jpg')
+        # images.append(img)
+        
+        show_images(images)
+
+        images = []
+
+        #staff2
+        for feature in featureTypes:
+            for i in range(numberOfFigs_eachType):
+                img = Image.open(f'{DISPLAY_FIG_PATHDIR}/staff2/{feature}/measure#{i:03}.'+self.FILE_PATH[-3:])
+                images.append(img)
+        # #change /test0/ to your folder of interest
+        # img = Image.open('/content/img2xml/bfaaap/musicdata/test0/staff2/body/measure#000.jpg')
+        # images.append(img)
+
+        show_images(images)
 
     def detect_bar(self):
         SAVE_DIRECTORY_PATH = os.path.dirname(self.FILE_PATH) + '/staff'
@@ -209,51 +240,20 @@ class convImage:
         elapsed_time = time.time() - start
         print ("elapsed_time:{0}".format(elapsed_time) + "[sec]")
 
-    def show_staff_img(self):
-        DISPLAY_FIG_PATHDIR = os.path.dirname(self.FILE_PATH)
-        images = []
-        featureTypes = ['body', 'armbeam', 'clef', 'accidental', 'rest']
-        numberOfFigs_eachType = 4
+        #get the file path, basename, extention
 
-        #staff1
-        for feature in featureTypes:
-            for i in range(numberOfFigs_eachType):
-                #img = Image.open(f'{DISPLAY_FIG_PATHDIR}/staff1/{feature}/measure#{i:03}.jpg')
-                img = Image.open(f'{DISPLAY_FIG_PATHDIR}/staff1/{feature}/measure#{i:03}.'+self.FILE_PATH[-3:])
-                images.append(img)
-        # #change /test0/ to your folder of interest
-        # img = Image.open('/content/img2xml/bfaaap/musicdata/test0/staff1/body/measure#000.jpg')
-        # images.append(img)
-        
-        show_images(images)
-
-        images = []
-
-        #staff2
-        for feature in featureTypes:
-            for i in range(numberOfFigs_eachType):
-                img = Image.open(f'{DISPLAY_FIG_PATHDIR}/staff2/{feature}/measure#{i:03}.'+self.FILE_PATH[-3:])
-                images.append(img)
-        # #change /test0/ to your folder of interest
-        # img = Image.open('/content/img2xml/bfaaap/musicdata/test0/staff2/body/measure#000.jpg')
-        # images.append(img)
-
-        show_images(images)
-
-# #get the file path, basename, extention
-
-# files_temp = glob.glob(self.FILE_PATH) #"./tmp/*":beforehand prepare images and Yolov5 anotation files in ./tmp/subdirectory
-# #To skip .txt files
-# FILE_DIR_PATH = ''
-# FILE_BASENAME = ''
-# FILE_BASENAME_WITHOUTEXT = ''
-# for file_temp in files_temp:
-#     if file_temp.endswith('jpg') or file_temp.endswith('png'):
-#         img = cv2.imread(file_temp)
-#         FILE_DIR_PATH = os.path.dirname(file_temp)
-#         FILE_BASENAME = os.path.basename(file_temp)
-#         FILE_BASENAME_WITHOUTEXT = os.path.splitext(FILE_BASENAME)[0]
-#         cv2.imwrite(FILE_DIR_PATH + '/staff/labels/' + FILE_BASENAME, img)
+        files_temp = glob.glob(self.FILE_PATH) #"./tmp/*":beforehand prepare images and Yolov5 anotation files in ./tmp/subdirectory
+        #To skip .txt files
+        FILE_DIR_PATH = ''
+        FILE_BASENAME = ''
+        FILE_BASENAME_WITHOUTEXT = ''
+        for file_temp in files_temp:
+            if file_temp.endswith('jpg') or file_temp.endswith('png'):
+                img = cv2.imread(file_temp)
+                FILE_DIR_PATH = os.path.dirname(file_temp)
+                FILE_BASENAME = os.path.basename(file_temp)
+                FILE_BASENAME_WITHOUTEXT = os.path.splitext(FILE_BASENAME)[0]
+                cv2.imwrite(FILE_DIR_PATH + '/staff/labels/' + FILE_BASENAME, img)
         
 # #sheet music provided in FILE_PATH
 # staves_with_measures_in_sheetmusic = generate_measures_in_eachstave_aslist(self.FILE_PATH)
