@@ -241,7 +241,7 @@ class convImage:
         print ("elapsed_time:{0}".format(elapsed_time) + "[sec]")
 
         #get the file path, basename, extention
-
+    def generate_xml(self):
         files_temp = glob.glob(self.FILE_PATH) #"./tmp/*":beforehand prepare images and Yolov5 anotation files in ./tmp/subdirectory
         #To skip .txt files
         FILE_DIR_PATH = ''
@@ -254,123 +254,120 @@ class convImage:
                 FILE_BASENAME = os.path.basename(file_temp)
                 FILE_BASENAME_WITHOUTEXT = os.path.splitext(FILE_BASENAME)[0]
                 cv2.imwrite(FILE_DIR_PATH + '/staff/labels/' + FILE_BASENAME, img)
-        
-# #sheet music provided in FILE_PATH
-# staves_with_measures_in_sheetmusic = generate_measures_in_eachstave_aslist(self.FILE_PATH)
-# print(f'the number of staves_with_measures_in_sheetmusic is {len(staves_with_measures_in_sheetmusic)}')
-# for i, each_staff in enumerate(staves_with_measures_in_sheetmusic):
-#     print(f'the number of measures in staff{i} is {len(each_staff)}')
 
-# #input wheter staves are paired
-# areStavesPaired = True
+        #sheet music provided in FILE_PATH
+        staves_with_measures_in_sheetmusic = generate_measures_in_eachstave_aslist(self.FILE_PATH)
+        print(f'the number of staves_with_measures_in_sheetmusic is {len(staves_with_measures_in_sheetmusic)}')
+        for i, each_staff in enumerate(staves_with_measures_in_sheetmusic):
+            print(f'the number of measures in staff{i} is {len(each_staff)}')
+    
+        #input wheter staves are paired
+        areStavesPaired = True
+        #generate ms sequence in each staff
 
-# #generate ms sequence in each staff
+        all_ms_in_eachmeasure_staff1, all_ms_in_eachmeasure_staff2 = give_all_ms_in_eachmeasure_for_staff1or2(isPaired=areStavesPaired, aligned_staves_input=staves_with_measures_in_sheetmusic, img_FILE_PATH=self.FILE_PATH)
+        print(f'the number of items in all_ms_in_eachmeasure_staff1 is {len(all_ms_in_eachmeasure_staff1)}')
+        aaa1 = all_ms_in_eachmeasure_staff1['measure#001']
+        print(f'aaa1 is {aaa1}')
+        print(f'the number of items in all_ms_in_eachmeasure_staff2 is {len(all_ms_in_eachmeasure_staff2)}')
+        bbb1 = all_ms_in_eachmeasure_staff2['measure#001']
+        print(f'bbb1 is {bbb1}')
 
+        #This information has been moved to the location where FILE_PATH was input
+        # #input base data for sheet music of interest:
+        # tempo = 120 #public data
+        # fifths = -1 #public data
+        # beats = 3 #public data
+        # beat_type = 2 #public data
+        # preset_measure_duration = 1024 * beats / beat_type #public data
 
-# all_ms_in_eachmeasure_staff1, all_ms_in_eachmeasure_staff2 = give_all_ms_in_eachmeasure_for_staff1or2(isPaired=areStavesPaired, aligned_staves_input=staves_with_measures_in_sheetmusic, img_FILE_PATH=FILE_PATH)
-# print(f'the number of items in all_ms_in_eachmeasure_staff1 is {len(all_ms_in_eachmeasure_staff1)}')
-# aaa1 = all_ms_in_eachmeasure_staff1['measure#001']
-# print(f'aaa1 is {aaa1}')
-# print(f'the number of items in all_ms_in_eachmeasure_staff2 is {len(all_ms_in_eachmeasure_staff2)}')
-# bbb1 = all_ms_in_eachmeasure_staff2['measure#001']
-# print(f'bbb1 is {bbb1}')
+        #additional parameters
+        staff = 1
+        isWideStaff = False
 
-# #This information has been moved to the location where FILE_PATH was input
-# # #input base data for sheet music of interest:
-# # tempo = 120 #public data
-# # fifths = -1 #public data
-# # beats = 3 #public data
-# # beat_type = 2 #public data
-# # preset_measure_duration = 1024 * beats / beat_type #public data
+        #classはimportすること
+        current_clef = Clef.G
+        current_accidental_table_template ={'A':'', 'B':'', 'C':'', 'D':'', 'E':'', 'F':'', 'G':''}
+        current_accidental_table = setCurrentAccidentalTable(current_accidental_table_template, self.fifths)
+        ms_sequenceOfInterest_staff1 = generateMSsequenceForStaff1or2(all_ms_in_eachmeasure_input=all_ms_in_eachmeasure_staff1, current_accidental_table_input=current_accidental_table, staff=1, current_clef_input=current_clef, preset_measure_duration=self.preset_measure_duration, FILE_PATH=self.FILE_PATH, isWideStaff=isWideStaff)
 
-# #additional parameters
-# staff = 1
-# isWideStaff = False
+        #for staff2: check current_clef
+        current_clef = Clef.F
+        ms_sequenceOfInterest_staff2 = generateMSsequenceForStaff1or2(all_ms_in_eachmeasure_input=all_ms_in_eachmeasure_staff2, current_accidental_table_input=current_accidental_table, staff=2, current_clef_input=current_clef, preset_measure_duration=self.preset_measure_duration, FILE_PATH=self.FILE_PATH, isWideStaff=isWideStaff)
 
-# #classはimportすること
-# current_clef = Clef.G
-# current_accidental_table_template ={'A':'', 'B':'', 'C':'', 'D':'', 'E':'', 'F':'', 'G':''}
-# current_accidental_table = setCurrentAccidentalTable(current_accidental_table_template, fifths)
-# ms_sequenceOfInterest_staff1 = generateMSsequenceForStaff1or2(all_ms_in_eachmeasure_input=all_ms_in_eachmeasure_staff1, current_accidental_table_input=current_accidental_table, staff=1, current_clef_input=current_clef, preset_measure_duration=preset_measure_duration, FILE_PATH=FILE_PATH, isWideStaff=isWideStaff)
+        print(f'the number of items in all_ms_in_eachmeasure_staff1 is {len(all_ms_in_eachmeasure_staff1)}')
+        print(f'the number of items in all_ms_in_eachmeasure_staff2 is {len(all_ms_in_eachmeasure_staff2)}')
 
-# #for staff2: check current_clef
-# current_clef = Clef.F
-# ms_sequenceOfInterest_staff2 = generateMSsequenceForStaff1or2(all_ms_in_eachmeasure_input=all_ms_in_eachmeasure_staff2, current_accidental_table_input=current_accidental_table, staff=2, current_clef_input=current_clef, preset_measure_duration=preset_measure_duration, FILE_PATH=FILE_PATH, isWideStaff=isWideStaff)
-
-# print(f'the number of items in all_ms_in_eachmeasure_staff1 is {len(all_ms_in_eachmeasure_staff1)}')
-# print(f'the number of items in all_ms_in_eachmeasure_staff2 is {len(all_ms_in_eachmeasure_staff2)}')
-
-# print(f'the number of items in ms_sequenceOfInterest_staff1 is {len(ms_sequenceOfInterest_staff1)}')
-# print(f'the number of items in ms_sequenceOfInterest_staff2 is {len(ms_sequenceOfInterest_staff2)}')
-
-# # generate a dictionary for ET
-
-# #for staff1
-# current_staff1_clef = Clef.G
-# dictionary_for_ET_staff1 = generateDictForET_singlestaff(ms_sequenceOfInterest_staff_input=ms_sequenceOfInterest_staff1, tempo=tempo, beats=beats, beat_type=beat_type, fifths=fifths, clef=current_staff1_clef)
-# part_content1 = dictionary_for_ET_staff1['part']
-# print(f'the number of items in dictionary_for_ET_staff1[0] is \n{len(part_content1)}')
-# #for staff2
-# current_staff2_clef = Clef.F
-# dictionary_for_ET_staff2 = generateDictForET_singlestaff(ms_sequenceOfInterest_staff_input=ms_sequenceOfInterest_staff2, tempo=tempo, beats=beats, beat_type=beat_type, fifths=fifths, clef=current_staff2_clef)
-# part_content2 = dictionary_for_ET_staff2['part']
-# print(f'the number of items in dictionary_for_ET_staff2[0] is \n{len(part_content2)}')
-
-# print(f'current_staff1_clef:{current_staff1_clef}\ncurrent_staff2_clef:{current_staff2_clef}')
+        print(f'the number of items in ms_sequenceOfInterest_staff1 is {len(ms_sequenceOfInterest_staff1)}')
+        print(f'the number of items in ms_sequenceOfInterest_staff2 is {len(ms_sequenceOfInterest_staff2)}')
 
 
-# #generate XML
+        #for staff1
+        current_staff1_clef = Clef.G
+        dictionary_for_ET_staff1 = generateDictForET_singlestaff(ms_sequenceOfInterest_staff_input=ms_sequenceOfInterest_staff1, tempo=self.tempo, beats=self.beats, beat_type=self.beat_type, fifths=self.fifths, clef=current_staff1_clef)
+        part_content1 = dictionary_for_ET_staff1['part']
+        print(f'the number of items in dictionary_for_ET_staff1[0] is \n{len(part_content1)}')
+        #for staff2
+        current_staff2_clef = Clef.F
+        dictionary_for_ET_staff2 = generateDictForET_singlestaff(ms_sequenceOfInterest_staff_input=ms_sequenceOfInterest_staff2, tempo=self.tempo, beats=self.beats, beat_type=self.beat_type, fifths=self.fifths, clef=current_staff2_clef)
+        part_content2 = dictionary_for_ET_staff2['part']
+        print(f'the number of items in dictionary_for_ET_staff2[0] is \n{len(part_content2)}')
+
+        print(f'current_staff1_clef:{current_staff1_clef}\ncurrent_staff2_clef:{current_staff2_clef}')
+
+
+        #generate XML
 
 
 
-# #for staff1
+        #for staff1
 
-# part_et = ET.Element('part')
-# part_et.attrib = {'id':'P1'}
-# part_et_1 = musicData2XML(part_et, dictionary_for_ET_staff1)
+        part_et = ET.Element('part')
+        part_et.attrib = {'id':'P1'}
+        part_et_1 = musicData2XML(part_et, dictionary_for_ET_staff1)
 
-# xmlstr_1 = minidom.parseString(ET.tostring(part_et_1)).toprettyxml(indent="   ")
+        xmlstr_1 = minidom.parseString(ET.tostring(part_et_1)).toprettyxml(indent="   ")
 
-# #to delete <?xml version="1.0"　?> in line 1
-# xmlstr_1 = xmlstr_1[23:]
-            
+        #to delete <?xml version="1.0"　?> in line 1
+        xmlstr_1 = xmlstr_1[23:]
+                    
 
-# #read template.xml to prepare part_et XML data and generate the whole XML
-# wholeXML_staff1_text = ""
-# with open("./bfaaap/yoloToxml/template.xml", 'r') as f:
-#     template_text = f.read()
-#     wholeXML_staff1_text = template_text +'\n' + xmlstr_1 +'\n</score-partwise>'
+        #read template.xml to prepare part_et XML data and generate the whole XML
+        wholeXML_staff1_text = ""
+        with open("./bfaaap/yoloToxml/template.xml", 'r') as f:
+            template_text = f.read()
+            wholeXML_staff1_text = template_text +'\n' + xmlstr_1 +'\n</score-partwise>'
 
-# #save the resulting xml in ./xml/ directory
-# FILE_DIR_PATH
-# new_dir_path = FILE_DIR_PATH + '/xml'
-# os.makedirs(new_dir_path, exist_ok=True)
-# new_xml_filepath = new_dir_path + '/' + FILE_BASENAME_WITHOUTEXT + '_staff1.xml'
-# with open(new_xml_filepath, 'w') as f:
-#     f.write(wholeXML_staff1_text)
+        #save the resulting xml in ./xml/ directory
+        FILE_DIR_PATH
+        new_dir_path = FILE_DIR_PATH + '/xml'
+        os.makedirs(new_dir_path, exist_ok=True)
+        new_xml_filepath = new_dir_path + '/' + FILE_BASENAME_WITHOUTEXT + '_staff1.xml'
+        with open(new_xml_filepath, 'w') as f:
+            f.write(wholeXML_staff1_text)
 
 
-# #for staff2
+        #for staff2
 
-# part_et = ET.Element('part')
-# part_et.attrib = {'id':'P1'}
-# part_et_2 = musicData2XML(part_et, dictionary_for_ET_staff2)
+        part_et = ET.Element('part')
+        part_et.attrib = {'id':'P1'}
+        part_et_2 = musicData2XML(part_et, dictionary_for_ET_staff2)
 
-# xmlstr_2 = minidom.parseString(ET.tostring(part_et_2)).toprettyxml(indent="   ")
+        xmlstr_2 = minidom.parseString(ET.tostring(part_et_2)).toprettyxml(indent="   ")
 
-# #to delete <?xml version="1.0"　?> in line 1
-# xmlstr_2 = xmlstr_2[23:]            
+        #to delete <?xml version="1.0"　?> in line 1
+        xmlstr_2 = xmlstr_2[23:]            
 
-# #read template.xml to prepare part_et XML data and generate the whole XML
-# wholeXML_staff2_text = ""
-# with open("./bfaaap/yoloToxml/template.xml", 'r') as f:
-#     template_text = f.read()
-#     wholeXML_staff2_text = template_text +'\n' + xmlstr_2 +'\n</score-partwise>'
+        #read template.xml to prepare part_et XML data and generate the whole XML
+        wholeXML_staff2_text = ""
+        with open("./bfaaap/yoloToxml/template.xml", 'r') as f:
+            template_text = f.read()
+            wholeXML_staff2_text = template_text +'\n' + xmlstr_2 +'\n</score-partwise>'
 
-# #save the resulting xml in ./xml/ directory
-# FILE_DIR_PATH
-# new_dir_path = FILE_DIR_PATH + '/xml'
-# os.makedirs(new_dir_path, exist_ok=True)
-# new_xml_filepath = new_dir_path + '/' + FILE_BASENAME_WITHOUTEXT + '_staff2.xml'
-# with open(new_xml_filepath, 'w') as f:
-#     f.write(wholeXML_staff2_text)
+        #save the resulting xml in ./xml/ directory
+        FILE_DIR_PATH
+        new_dir_path = FILE_DIR_PATH + '/xml'
+        os.makedirs(new_dir_path, exist_ok=True)
+        new_xml_filepath = new_dir_path + '/' + FILE_BASENAME_WITHOUTEXT + '_staff2.xml'
+        with open(new_xml_filepath, 'w') as f:
+            f.write(wholeXML_staff2_text)

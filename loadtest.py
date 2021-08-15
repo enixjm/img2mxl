@@ -11,6 +11,7 @@ preset_measure_duration = 1024 * beats / beat_type #
 
 conv_img = load2.convImage(FILE_PATH=FILE_PATH, tempo=tempo, fifths=fifths, beats=beats, beat_type=beat_type, preset_measure_duration=preset_measure_duration)
 
-#conv_img.level_original_img()
-#conv_img.detect_bar()
-conv_img.show_staff_img()
+conv_img.level_original_img()
+conv_img.detect_bar()
+#conv_img.show_staff_img()
+conv_img.generate_xml()
