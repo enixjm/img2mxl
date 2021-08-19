@@ -33,6 +33,19 @@ def show_images(images, figsize=(20,20), columns = 4):
         plt.imshow(image)
         plt.show
 
+def pm(content1, content2):
+    rt = []
+    for mv in content1.values():
+        for key, val in mv.items():
+            if key[:3] == 'note' and val == 'pitch':
+                rt.append(val)
+    for mv in content2.values():
+        for key, val in mv.items():
+            if key[:3] == 'note' and val == 'pitch':
+                rt.append(val)
+
+    return rt;
+
 class convImage:
     def __init__(self, FILE_PATH, tempo, fifths, beats, beat_type, preset_measure_duration):
         self.FILE_PATH = FILE_PATH
@@ -307,6 +320,8 @@ class convImage:
         dictionary_for_ET_staff1 = generateDictForET_singlestaff(ms_sequenceOfInterest_staff_input=ms_sequenceOfInterest_staff1, tempo=self.tempo, beats=self.beats, beat_type=self.beat_type, fifths=self.fifths, clef=current_staff1_clef)
         part_content1 = dictionary_for_ET_staff1['part']
         print(f'the number of items in dictionary_for_ET_staff1[0] is \n{len(part_content1)}')
+
+        print(part_content1)
         #for staff2
         current_staff2_clef = Clef.F
         dictionary_for_ET_staff2 = generateDictForET_singlestaff(ms_sequenceOfInterest_staff_input=ms_sequenceOfInterest_staff2, tempo=self.tempo, beats=self.beats, beat_type=self.beat_type, fifths=self.fifths, clef=current_staff2_clef)
@@ -315,6 +330,7 @@ class convImage:
 
         print(f'current_staff1_clef:{current_staff1_clef}\ncurrent_staff2_clef:{current_staff2_clef}')
 
+        print(part_content2)
 
         #generate XML
 
@@ -326,6 +342,8 @@ class convImage:
         part_et.attrib = {'id':'P1'}
         part_et_1 = musicData2XML(part_et, dictionary_for_ET_staff1)
 
+        print(part_et_1)
+        
         xmlstr_1 = minidom.parseString(ET.tostring(part_et_1)).toprettyxml(indent="   ")
 
         #to delete <?xml version="1.0"　?> in line 1
@@ -371,3 +389,6 @@ class convImage:
         new_xml_filepath = new_dir_path + '/' + FILE_BASENAME_WITHOUTEXT + '_staff2.xml'
         with open(new_xml_filepath, 'w') as f:
             f.write(wholeXML_staff2_text)
+
+
+        return pm(content1=part_content1, content2=part_content2)
