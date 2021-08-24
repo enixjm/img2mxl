@@ -7,6 +7,8 @@
 import xml.etree.ElementTree as ET
 import copy
 
+from numpy.lib.function_base import meshgrid
+
 """
 music_data = {
     'part': {
@@ -217,92 +219,225 @@ music_data = {
 part_et = ET.Element('part')
 part_et.attrib = {'id':'P1'}
 
-def musicData2XML(part_et, music_data1, music_data2):
-    for part, measures_value in music_data.items():
-       for measure, measure_value in measures_value.items():
-            measure_et = ET.SubElement(part_et, 'measure')
+def musicData2XML(part_et, clef_1, clef_2):
 
+    for part, measures_value in clef_1.items():
+        for measure, measure_value in measures_value.items():
+            measure_et = ET.SubElement(part_et, 'measure')
+            for measure_key, measure_value in measure_value.items():
+                # print(measure_key, measure_value)
+                if not isinstance(measure_value, dict): # key value pair
+                    elem_et = ET.SubElement(measure_et, measure_key)
+                    elem_et.text = measure_value
+                elif measure_key == 'attrib':
+                    measure_et.attrib = measure_value
+                
+                elif measure_key == 'attributes' or measure_key == 'attributes1':
+                    attributes_et = ET.SubElement(measure_et, 'attributes')
+                    for attributes_key, attributes_value in measure_value.items():
+                        if not isinstance(attributes_value, dict):
+                            subattributes_elem_et = ET.SubElement(attributes_et, attributes_key)
+                            subattributes_elem_et.text = attributes_value
+                        else:
+                            subattributes_dicelem_et = ET.SubElement(attributes_et, attributes_key)
+                            for subattributes_dicelem_key, subattributes_dicelem_value in attributes_value.items():
+                                if subattributes_dicelem_key == 'attrib':
+                                    subattributes_dicelem_et.attrib = subattributes_dicelem_value
+                                    continue
+                                sub_subattributes_dicelem_et = ET.SubElement(subattributes_dicelem_et, subattributes_dicelem_key)
+                                sub_subattributes_dicelem_et.text = subattributes_dicelem_value
+                elif measure_key == 'attributes_added':
+                    attributes_added_et = ET.SubElement(measure_et, 'attributes')
+                    #check again later whether this is OK
+                    for attributes_key, attributes_value in measure_value.items():
+                        if not isinstance(attributes_value, dict):
+                            subattributes_elem_et = ET.SubElement(attributes_added_et, attributes_key)
+                            subattributes_elem_et.text = attributes_value
+                        else:
+                            subattributes_dicelem_et = ET.SubElement(attributes_added_et, attributes_key)
+                            for subattributes_dicelem_key, subattributes_dicelem_value in attributes_value.items():
+                                if subattributes_dicelem_key == 'attrib':
+                                    subattributes_dicelem_et.attrib = subattributes_dicelem_value
+                                    continue
+                                sub_subattributes_dicelem_et = ET.SubElement(subattributes_dicelem_et, subattributes_dicelem_key)
+                                sub_subattributes_dicelem_et.text = subattributes_dicelem_value
+
+
+                elif measure_key == 'direction0' or measure_key == 'direction1' or measure_key == 'direction2':
+                    direction_et = ET.SubElement(measure_et, 'direction')
+                    for direction_key, direction_value in measure_value.items():
+                        # if direction_key == 'sound':
+                        #     sound_et = ET.SubElement(direction_et, direction_key)
+                        #     for sound_key, sound_value in direction_value.items():
+                        #         sound_et.attrib = {'tempo':sound_value}
+                        if direction_key == 'direction-type':
+                            direction_type_et = ET.SubElement(direction_et, 'direction-type')
+                            for direction_type_key, direction_type_value in direction_value.items():
+                                if direction_type_key == 'octave-shift':
+                                    octave_shift_et = ET.SubElement(direction_type_et, 'octave-shift')
+                                    octave_shift_et.attrib = direction_type_value
+                                    # for octave_shift_key, octave_shift_value in direction_type_value.items():
+                                    #     print(f'octave_shift_valueは{octave_shift_value}')
+                                    #     octave_shift_et.attrib = direction_type_value
+
+
+                else:  # dict and key=note
+                    note_et = ET.SubElement(measure_et, 'note')
+                    for note_key, note_value in measure_value.items():
+                        if not isinstance(note_value, dict):
+                            subelem_et = ET.SubElement(note_et, note_key)
+                            subelem_et.text = note_value
+                        elif note_key == 'pitch':
+                            pitch_et = ET.SubElement(note_et, note_key)
+                            for pitch_key, pitch_value in note_value.items():
+                                subsubelem_et = ET.SubElement(pitch_et, pitch_key)
+                                subsubelem_et.text = pitch_value
+                        elif note_key == 'beam':
+                            beam_et = ET.SubElement(note_et, note_key)
+                            for beam_key, beam_value in note_value.items():
+                                if beam_key == 'number':
+                                    beam_et.attrib = {'number':beam_value}
+                                if beam_key == 'content':
+                                    beam_et.text = beam_value
+                        else:
+                            print(f'Another note item  is {note_key}.')
+                            
+
+    
+    # change staves text
+    part_et[0].find('attributes').find('staves').text = '2'
+    # change clef attrib = number="1"
+    part_et[0].find('attributes').find('clef').attrib = {'number' : '1'}
+
+    # add clef_number_2 elements
+    clef_2_attrib_clef = clef_2['part']['measure1']['attributes']['clef']
+
+    ET.SubElement(part_et[0].find('attributes'), 'clef').attrib = {'number' : '2'}
+    ET.SubElement(part_et[0].find('attributes')[-1], 'sign').text = clef_2_attrib_clef['sign']
+    ET.SubElement(part_et[0].find('attributes')[-1], 'line').text = clef_2_attrib_clef['line']
+    
+
+    for i, measures in enumerate(part_et, start=1):
+
+        # print(measures.tag)
+        # print(clef_2['part'][measures.tag + str(i)])
+
+
+        for measure_key, measure_value in clef_2['part'][measures.tag + str(i)].items():
+
+            if measure_key[:4] == 'note':
+                # print(measure_key, measure_value)
+                note_et = ET.SubElement(measures, 'note')
+
+                for note_key, note_value in measure_value.items():
+                    # print(note_key, note_value)
+                    if not isinstance(note_value, dict):
+                        subelem_et = ET.SubElement(note_et, note_key)
+                        if note_key == 'staff':
+                            subelem_et.text = str(int(note_value)+1)
+                        else: 
+                            subelem_et.text = note_value
+                    elif note_key == 'pitch':
+                        pitch_et = ET.SubElement(note_et, note_key)
+                        for pitch_key, pitch_value in note_value.items():
+                            subsubelem_et = ET.SubElement(pitch_et, pitch_key)
+                            subsubelem_et.text = pitch_value
+                    elif note_key == 'beam':
+                        beam_et = ET.SubElement(note_et, note_key)
+                        for beam_key, beam_value in note_value.items():
+                            if beam_key == 'number':
+                                beam_et.attrib = {'number':beam_value}
+                            if beam_key == 'content':
+                                beam_et.text = beam_value
+                    else:
+                        print(f'Another note item  is {note_key}.')
+                            
+
+
+
+
+    # print(ET.tostring(part_et))
     return part_et
 
-# def musicData2XML(part_et, music_data):
-#     for part, measures_value in music_data.items():
-#         for measure, measure_value in measures_value.items():
-#             measure_et = ET.SubElement(part_et, 'measure')
-#             for measure_key, measure_value in measure_value.items():
-#                 # print(measure_key, measure_value)
-#                 if not isinstance(measure_value, dict): # key value pair
-#                     elem_et = ET.SubElement(measure_et, measure_key)
-#                     elem_et.text = measure_value
-#                 elif measure_key == 'attrib':
-#                     measure_et.attrib = measure_value
+def musicData2XML2(part_et, music_data):
+    for part, measures_value in music_data.items():
+        for measure, measure_value in measures_value.items():
+            measure_et = ET.SubElement(part_et, 'measure')
+            for measure_key, measure_value in measure_value.items():
+                # print(measure_key, measure_value)
+                if not isinstance(measure_value, dict): # key value pair
+                    elem_et = ET.SubElement(measure_et, measure_key)
+                    elem_et.text = measure_value
+                elif measure_key == 'attrib':
+                    measure_et.attrib = measure_value
                 
-#                 elif measure_key == 'attributes' or measure_key == 'attributes1':
-#                     attributes_et = ET.SubElement(measure_et, 'attributes')
-#                     for attributes_key, attributes_value in measure_value.items():
-#                         if not isinstance(attributes_value, dict):
-#                             subattributes_elem_et = ET.SubElement(attributes_et, attributes_key)
-#                             subattributes_elem_et.text = attributes_value
-#                         else:
-#                             subattributes_dicelem_et = ET.SubElement(attributes_et, attributes_key)
-#                             for subattributes_dicelem_key, subattributes_dicelem_value in attributes_value.items():
-#                                 if subattributes_dicelem_key == 'attrib':
-#                                     subattributes_dicelem_et.attrib = subattributes_dicelem_value
-#                                     continue
-#                                 sub_subattributes_dicelem_et = ET.SubElement(subattributes_dicelem_et, subattributes_dicelem_key)
-#                                 sub_subattributes_dicelem_et.text = subattributes_dicelem_value
-#                 elif measure_key == 'attributes_added':
-#                     attributes_added_et = ET.SubElement(measure_et, 'attributes')
-#                     #check again later whether this is OK
-#                     for attributes_key, attributes_value in measure_value.items():
-#                         if not isinstance(attributes_value, dict):
-#                             subattributes_elem_et = ET.SubElement(attributes_added_et, attributes_key)
-#                             subattributes_elem_et.text = attributes_value
-#                         else:
-#                             subattributes_dicelem_et = ET.SubElement(attributes_added_et, attributes_key)
-#                             for subattributes_dicelem_key, subattributes_dicelem_value in attributes_value.items():
-#                                 if subattributes_dicelem_key == 'attrib':
-#                                     subattributes_dicelem_et.attrib = subattributes_dicelem_value
-#                                     continue
-#                                 sub_subattributes_dicelem_et = ET.SubElement(subattributes_dicelem_et, subattributes_dicelem_key)
-#                                 sub_subattributes_dicelem_et.text = subattributes_dicelem_value
+                elif measure_key == 'attributes' or measure_key == 'attributes1':
+                    attributes_et = ET.SubElement(measure_et, 'attributes')
+                    for attributes_key, attributes_value in measure_value.items():
+                        if not isinstance(attributes_value, dict):
+                            subattributes_elem_et = ET.SubElement(attributes_et, attributes_key)
+                            subattributes_elem_et.text = attributes_value
+                        else:
+                            subattributes_dicelem_et = ET.SubElement(attributes_et, attributes_key)
+                            for subattributes_dicelem_key, subattributes_dicelem_value in attributes_value.items():
+                                if subattributes_dicelem_key == 'attrib':
+                                    subattributes_dicelem_et.attrib = subattributes_dicelem_value
+                                    continue
+                                sub_subattributes_dicelem_et = ET.SubElement(subattributes_dicelem_et, subattributes_dicelem_key)
+                                sub_subattributes_dicelem_et.text = subattributes_dicelem_value
+                elif measure_key == 'attributes_added':
+                    attributes_added_et = ET.SubElement(measure_et, 'attributes')
+                    #check again later whether this is OK
+                    for attributes_key, attributes_value in measure_value.items():
+                        if not isinstance(attributes_value, dict):
+                            subattributes_elem_et = ET.SubElement(attributes_added_et, attributes_key)
+                            subattributes_elem_et.text = attributes_value
+                        else:
+                            subattributes_dicelem_et = ET.SubElement(attributes_added_et, attributes_key)
+                            for subattributes_dicelem_key, subattributes_dicelem_value in attributes_value.items():
+                                if subattributes_dicelem_key == 'attrib':
+                                    subattributes_dicelem_et.attrib = subattributes_dicelem_value
+                                    continue
+                                sub_subattributes_dicelem_et = ET.SubElement(subattributes_dicelem_et, subattributes_dicelem_key)
+                                sub_subattributes_dicelem_et.text = subattributes_dicelem_value
 
 
-#                 elif measure_key == 'direction0' or measure_key == 'direction1' or measure_key == 'direction2':
-#                     direction_et = ET.SubElement(measure_et, 'direction')
-#                     for direction_key, direction_value in measure_value.items():
-#                         # if direction_key == 'sound':
-#                         #     sound_et = ET.SubElement(direction_et, direction_key)
-#                         #     for sound_key, sound_value in direction_value.items():
-#                         #         sound_et.attrib = {'tempo':sound_value}
-#                         if direction_key == 'direction-type':
-#                             direction_type_et = ET.SubElement(direction_et, 'direction-type')
-#                             for direction_type_key, direction_type_value in direction_value.items():
-#                                 if direction_type_key == 'octave-shift':
-#                                     octave_shift_et = ET.SubElement(direction_type_et, 'octave-shift')
-#                                     octave_shift_et.attrib = direction_type_value
-#                                     # for octave_shift_key, octave_shift_value in direction_type_value.items():
-#                                     #     print(f'octave_shift_valueは{octave_shift_value}')
-#                                     #     octave_shift_et.attrib = direction_type_value
+                elif measure_key == 'direction0' or measure_key == 'direction1' or measure_key == 'direction2':
+                    direction_et = ET.SubElement(measure_et, 'direction')
+                    for direction_key, direction_value in measure_value.items():
+                        # if direction_key == 'sound':
+                        #     sound_et = ET.SubElement(direction_et, direction_key)
+                        #     for sound_key, sound_value in direction_value.items():
+                        #         sound_et.attrib = {'tempo':sound_value}
+                        if direction_key == 'direction-type':
+                            direction_type_et = ET.SubElement(direction_et, 'direction-type')
+                            for direction_type_key, direction_type_value in direction_value.items():
+                                if direction_type_key == 'octave-shift':
+                                    octave_shift_et = ET.SubElement(direction_type_et, 'octave-shift')
+                                    octave_shift_et.attrib = direction_type_value
+                                    # for octave_shift_key, octave_shift_value in direction_type_value.items():
+                                    #     print(f'octave_shift_valueは{octave_shift_value}')
+                                    #     octave_shift_et.attrib = direction_type_value
 
 
-#                 else:  # dict and key=note
-#                     note_et = ET.SubElement(measure_et, 'note')
-#                     for note_key, note_value in measure_value.items():
-#                         if not isinstance(note_value, dict):
-#                             subelem_et = ET.SubElement(note_et, note_key)
-#                             subelem_et.text = note_value
-#                         elif note_key == 'pitch':
-#                             pitch_et = ET.SubElement(note_et, note_key)
-#                             for pitch_key, pitch_value in note_value.items():
-#                                 subsubelem_et = ET.SubElement(pitch_et, pitch_key)
-#                                 subsubelem_et.text = pitch_value
-#                         elif note_key == 'beam':
-#                             beam_et = ET.SubElement(note_et, note_key)
-#                             for beam_key, beam_value in note_value.items():
-#                                 if beam_key == 'number':
-#                                     beam_et.attrib = {'number':beam_value}
-#                                 if beam_key == 'content':
-#                                     beam_et.text = beam_value
-#                         else:
-#                             print(f'Another note item  is {note_key}.')
-#     return part_et
+                else:  # dict and key=note
+                    note_et = ET.SubElement(measure_et, 'note')
+                    for note_key, note_value in measure_value.items():
+                        if not isinstance(note_value, dict):
+                            subelem_et = ET.SubElement(note_et, note_key)
+                            subelem_et.text = note_value
+                        elif note_key == 'pitch':
+                            pitch_et = ET.SubElement(note_et, note_key)
+                            for pitch_key, pitch_value in note_value.items():
+                                subsubelem_et = ET.SubElement(pitch_et, pitch_key)
+                                subsubelem_et.text = pitch_value
+                        elif note_key == 'beam':
+                            beam_et = ET.SubElement(note_et, note_key)
+                            for beam_key, beam_value in note_value.items():
+                                if beam_key == 'number':
+                                    beam_et.attrib = {'number':beam_value}
+                                if beam_key == 'content':
+                                    beam_et.text = beam_value
+                        else:
+                            print(f'Another note item  is {note_key}.')
+    return part_et
