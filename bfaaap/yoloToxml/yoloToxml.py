@@ -321,8 +321,6 @@ def musicData2XML(part_et, clef_1, clef_2):
 
         # print(measures.tag)
         # print(clef_2['part'][measures.tag + str(i)])
-
-
         for measure_key, measure_value in clef_2['part'][measures.tag + str(i)].items():
 
             if measure_key[:4] == 'note':
@@ -351,10 +349,6 @@ def musicData2XML(part_et, clef_1, clef_2):
                                 beam_et.text = beam_value
                     else:
                         print(f'Another note item  is {note_key}.')
-                            
-
-
-
 
     # print(ET.tostring(part_et))
     return part_et

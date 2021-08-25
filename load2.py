@@ -33,19 +33,6 @@ def show_images(images, figsize=(20,20), columns = 4):
         plt.imshow(image)
         plt.show
 
-def pm(content1, content2):
-    rt = []
-    for mv in content1.values():
-        for key, val in mv.items():
-            if key[:3] == 'note' and val == 'pitch':
-                rt.append(val)
-    for mv in content2.values():
-        for key, val in mv.items():
-            if key[:3] == 'note' and val == 'pitch':
-                rt.append(val)
-
-    return rt;
-
 class convImage:
     def __init__(self, FILE_PATH, tempo, fifths, beats, beat_type, preset_measure_duration):
         self.FILE_PATH = FILE_PATH
@@ -321,7 +308,6 @@ class convImage:
         part_content1 = dictionary_for_ET_staff1['part']
         print(f'the number of items in dictionary_for_ET_staff1[0] is \n{len(part_content1)}')
 
-        print(part_content1)
         #for staff2
         current_staff2_clef = Clef.F
         dictionary_for_ET_staff2 = generateDictForET_singlestaff(ms_sequenceOfInterest_staff_input=ms_sequenceOfInterest_staff2, tempo=self.tempo, beats=self.beats, beat_type=self.beat_type, fifths=self.fifths, clef=current_staff2_clef)
@@ -330,65 +316,84 @@ class convImage:
 
         print(f'current_staff1_clef:{current_staff1_clef}\ncurrent_staff2_clef:{current_staff2_clef}')
 
-        print(part_content2)
-
         #generate XML
+
+        part_et = ET.Element('part')
+        part_et.attrib = {'id':'P1'}
+
+        part_et = musicData2XML(part_et, dictionary_for_ET_staff1, dictionary_for_ET_staff2)
+        
+        xmlstr = minidom.parseString(ET.tostring(part_et)).toprettyxml(indent="   ")
+
+        #to delete <?xml version="1.0"　?> in line 1
+        xmlstr = xmlstr[23:]
+
+
+        wholeXML_ext = ""
+        with open("./bfaaap/yoloToxml/template.xml", 'r') as f:
+            template_text = f.read()
+            wholeXML_text = template_text +'\n' + xmlstr +'\n</score-partwise>'
+
+        #save the resulting xml in ./xml/ directory
+        FILE_DIR_PATH
+        new_dir_path = FILE_DIR_PATH + '/xml'
+        os.makedirs(new_dir_path, exist_ok=True)
+        new_xml_filepath = new_dir_path + '/' + FILE_BASENAME_WITHOUTEXT + '.xml'
+        with open(new_xml_filepath, 'w') as f:
+            f.write(wholeXML_text)
+
 
 
 
         #for staff1
 
-        part_et = ET.Element('part')
-        part_et.attrib = {'id':'P1'}
-        part_et_1 = musicData2XML(part_et, dictionary_for_ET_staff1)
-
-        print(part_et_1)
+        # part_et = ET.Element('part')
+        # part_et.attrib = {'id':'P1'}
+        # part_et_1 = musicData2XML(part_et, dictionary_for_ET_staff1, dictionary_for_ET_staff2)
         
-        xmlstr_1 = minidom.parseString(ET.tostring(part_et_1)).toprettyxml(indent="   ")
+        # xmlstr_1 = minidom.parseString(ET.tostring(part_et_1)).toprettyxml(indent="   ")
 
-        #to delete <?xml version="1.0"　?> in line 1
-        xmlstr_1 = xmlstr_1[23:]
+        # #to delete <?xml version="1.0"　?> in line 1
+        # xmlstr_1 = xmlstr_1[23:]
                     
 
-        #read template.xml to prepare part_et XML data and generate the whole XML
-        wholeXML_staff1_text = ""
-        with open("./bfaaap/yoloToxml/template.xml", 'r') as f:
-            template_text = f.read()
-            wholeXML_staff1_text = template_text +'\n' + xmlstr_1 +'\n</score-partwise>'
+        # #read template.xml to prepare part_et XML data and generate the whole XML
+        # wholeXML_staff1_text = ""
+        # with open("./bfaaap/yoloToxml/template.xml", 'r') as f:
+        #     template_text = f.read()
+        #     wholeXML_staff1_text = template_text +'\n' + xmlstr_1 +'\n</score-partwise>'
 
-        #save the resulting xml in ./xml/ directory
-        FILE_DIR_PATH
-        new_dir_path = FILE_DIR_PATH + '/xml'
-        os.makedirs(new_dir_path, exist_ok=True)
-        new_xml_filepath = new_dir_path + '/' + FILE_BASENAME_WITHOUTEXT + '_staff1.xml'
-        with open(new_xml_filepath, 'w') as f:
-            f.write(wholeXML_staff1_text)
-
-
-        #for staff2
-
-        part_et = ET.Element('part')
-        part_et.attrib = {'id':'P1'}
-        part_et_2 = musicData2XML(part_et, dictionary_for_ET_staff2)
-
-        xmlstr_2 = minidom.parseString(ET.tostring(part_et_2)).toprettyxml(indent="   ")
-
-        #to delete <?xml version="1.0"　?> in line 1
-        xmlstr_2 = xmlstr_2[23:]            
-
-        #read template.xml to prepare part_et XML data and generate the whole XML
-        wholeXML_staff2_text = ""
-        with open("./bfaaap/yoloToxml/template.xml", 'r') as f:
-            template_text = f.read()
-            wholeXML_staff2_text = template_text +'\n' + xmlstr_2 +'\n</score-partwise>'
-
-        #save the resulting xml in ./xml/ directory
-        FILE_DIR_PATH
-        new_dir_path = FILE_DIR_PATH + '/xml'
-        os.makedirs(new_dir_path, exist_ok=True)
-        new_xml_filepath = new_dir_path + '/' + FILE_BASENAME_WITHOUTEXT + '_staff2.xml'
-        with open(new_xml_filepath, 'w') as f:
-            f.write(wholeXML_staff2_text)
+        # #save the resulting xml in ./xml/ directory
+        # FILE_DIR_PATH
+        # new_dir_path = FILE_DIR_PATH + '/xml'
+        # os.makedirs(new_dir_path, exist_ok=True)
+        # new_xml_filepath = new_dir_path + '/' + FILE_BASENAME_WITHOUTEXT + '_staff1.xml'
+        # with open(new_xml_filepath, 'w') as f:
+        #     f.write(wholeXML_staff1_text)
 
 
-        return pm(content1=part_content1, content2=part_content2)
+        # #for staff2
+
+        # part_et = ET.Element('part')
+        # part_et.attrib = {'id':'P1'}
+        # part_et_2 = musicData2XML(part_et, dictionary_for_ET_staff2)
+
+        # xmlstr_2 = minidom.parseString(ET.tostring(part_et_2)).toprettyxml(indent="   ")
+
+        # #to delete <?xml version="1.0"　?> in line 1
+        # xmlstr_2 = xmlstr_2[23:]            
+
+        # #read template.xml to prepare part_et XML data and generate the whole XML
+        # wholeXML_staff2_text = ""
+        # with open("./bfaaap/yoloToxml/template.xml", 'r') as f:
+        #     template_text = f.read()
+        #     wholeXML_staff2_text = template_text +'\n' + xmlstr_2 +'\n</score-partwise>'
+
+        # #save the resulting xml in ./xml/ directory
+        # FILE_DIR_PATH
+        # new_dir_path = FILE_DIR_PATH + '/xml'
+        # os.makedirs(new_dir_path, exist_ok=True)
+        # new_xml_filepath = new_dir_path + '/' + FILE_BASENAME_WITHOUTEXT + '_staff2.xml'
+        # with open(new_xml_filepath, 'w') as f:
+        #     f.write(wholeXML_staff2_text)
+
