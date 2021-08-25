@@ -1,12 +1,20 @@
-FROM ultralytics/yolov5
+FROM pytorch/pytorch:1.9.0-cuda10.2-cudnn7-runtime
 
+RUN apt update && apt install -y libgl1-mesa-glx libglib2.0-0
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY bfaaap/yolov5/requirements.txt .
 RUN pip install -r requirements.txt
 
-RUN rm -rf /usr/src/app
-WORKDIR /usr/src
+WORKDIR /usr/src/app
 
 # Copy contents
-COPY . /usr/src
+COPY . /usr/src/app
 
 EXPOSE 5000
 
